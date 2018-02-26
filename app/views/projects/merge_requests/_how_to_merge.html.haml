@@ -1,0 +1,55 @@
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('how_to_merge')
+
+#modal_merge_info.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %h3 检出，在本地审查和合并
+      .modal-body
+        %p
+          %strong Step 1.
+          获取并检出此合并请求的分支
+        = clipboard_button(target: "pre#merge-info-1", title: "复制命令到剪贴板")
+        %pre.dark#merge-info-1
+          - if @merge_request.for_fork?
+            :preserve
+              git fetch #{h default_url_to_repo(@merge_request.source_project)} #{h @merge_request.source_branch}
+              git checkout -b #{h @merge_request.source_project_path}-#{h @merge_request.source_branch} FETCH_HEAD
+          - else
+            :preserve
+              git fetch origin
+              git checkout -b #{h @merge_request.source_branch} origin/#{h @merge_request.source_branch}
+        %p
+          %strong Step 2.
+          本地审查变更
+
+        %p
+          %strong Step 3.
+          合并分支并修复出现的任何冲突
+        = clipboard_button(target: "pre#merge-info-3", title: "复制命令到剪贴板")
+        %pre.dark#merge-info-3
+          - if @merge_request.for_fork?
+            :preserve
+              git checkout #{h @merge_request.target_branch}
+              git merge --no-ff #{h @merge_request.source_project_path}-#{h @merge_request.source_branch}
+          - else
+            :preserve
+              git checkout #{h @merge_request.target_branch}
+              git merge --no-ff #{h @merge_request.source_branch}
+        %p
+          %strong Step 4.
+          推送合并的结果到 GitLab
+        = clipboard_button(target: "pre#merge-info-4", title: "复制命令到剪贴板")
+        %pre.dark#merge-info-4
+          :preserve
+            git push origin #{h @merge_request.target_branch}
+        - unless @merge_request.can_be_merged_by?(current_user)
+          %p
+            请注意推送到 GitLab 需要有此版本库的写权限。
+        %p
+          %strong 提示：
+          您可以
+          = link_to '参考这个说明', help_page_path('user/project/merge_requests/index.md', anchor: "checkout-merge-requests-locally"), target: '_blank', rel: 'noopener noreferrer'
+          将合并请求检出到本地。

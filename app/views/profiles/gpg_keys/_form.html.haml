@@ -1,0 +1,10 @@
+%div
+  = form_for [:profile, @gpg_key], html: { class: 'js-requires-input' } do |f|
+    = form_errors(@gpg_key)
+
+    .form-group
+      = f.label :key, '密钥', class: 'label-light'
+      = f.text_area :key, class: "form-control", rows: 8, required: true, placeholder: "不要把 GPG 密钥中的私钥部分贴过来，请只粘贴公钥部分，其开始于 '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
+
+    .prepend-top-default
+      = f.submit '添加密钥', class: "btn btn-create"

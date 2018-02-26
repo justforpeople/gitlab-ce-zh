@@ -1,0 +1,24 @@
+- expanded = Rails.env.test?
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      保护标签
+    %button.btn.js-settings-toggle
+      = expanded ? '收起' : '展开'
+    %p
+      限制标签的创建、更新权限。
+  .settings-content
+    %p
+      默认情况下，保护标签被设计为：
+      %ul
+        %li 除了主程序员外，禁止其他所有人员创建标签
+        %li 禁止 <strong>任何人</strong> 更新此标签
+        %li 禁止 <strong>任何人</strong> 删除此标签
+
+    %p 点击 #{link_to "保护标签", help_page_path("user/project/protected_tags")} 了解更多。
+
+    - if can? current_user, :admin_project, @project
+      = yield :create_protected_tag
+
+    = yield :tag_list

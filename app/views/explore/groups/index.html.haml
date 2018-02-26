@@ -1,0 +1,23 @@
+- @hide_top_links = true
+- page_title    "群组"
+- header_title  "群组", dashboard_groups_path
+
+- if current_user
+  = render 'dashboard/groups_head'
+- else
+  = render 'explore/head'
+  = render 'nav'
+
+- if cookies[:explore_groups_landing_dismissed] != 'true'
+  .explore-groups.landing.content-block.js-explore-groups-landing.hidden
+    %button.dismiss-button{ type: 'button', 'aria-label' => 'Dismiss' }= icon('times')
+    .svg-container
+      = custom_icon('icon_explore_groups_splash')
+    .inner-content
+      %p 在下方，您将看到所有的公开群组。
+      %p 您可以通过请求加入这些群组从而轻松地为他们做出贡献。
+
+- if params[:filter].blank? && @groups.empty?
+  .nothing-here-block No public groups
+- else
+  = render 'groups'

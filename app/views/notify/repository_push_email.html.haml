@@ -1,0 +1,80 @@
+= content_for :head do
+  = stylesheet_link_tag 'mailers/highlighted_diff_email'
+
+%h3
+  #{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name}
+  在 #{link_to(@message.project_name_with_namespace, project_url(@message.project))}
+
+- if @message.compare
+  - if @message.reverse_compare?
+    %p
+      %strong 警告：
+      此推送不包含任何提交，但强制推送会删除下面的提交和变更。
+
+  %h4
+    = @message.reverse_compare? ? "删除的提交：" : "提交："
+
+  %ul
+    - @message.commits.each do |commit|
+      %li
+        %strong= link_to(commit.short_id, project_commit_url(@message.project, commit))
+        %div
+          %span 由 #{commit.author_name}
+          %i 在 #{commit.committed_date.to_s(:iso8601)}
+        %pre.commit-message
+          = commit.safe_message
+
+  %h4 #{pluralize @message.diffs_count, "个修改的文件", "个修改的文件"}:
+
+  %ul
+    - @message.diffs.each do |diff_file|
+      %li.file-stats
+        %a{ href: "#{@message.target_url if @message.disable_diffs?}##{hexdigest(diff_file.file_path)}" }
+          - if diff_file.deleted_file?
+            %span.deleted-file
+              &minus;
+              = diff_file.old_path
+          - elsif diff_file.renamed_file?
+            = diff_file.old_path
+            &rarr;
+            = diff_file.new_path
+          - elsif diff_file.new_file?
+            %span.new-file
+              &#43;
+              = diff_file.new_path
+          - else
+            = diff_file.new_path
+
+  - unless @message.disable_diffs?
+    - if @message.compare_timeout
+      %h5 因为此差异过大，所以不显示。
+    - else
+      %h4 变更：
+      - @message.diffs.each do |diff_file|
+        - file_hash = hexdigest(diff_file.file_path)
+        %li{ id: file_hash }
+          %a{ href: @message.target_url + "##{file_hash}" }<
+            - if diff_file.deleted_file?
+              %strong<
+                = diff_file.old_path
+              已删除
+            - elsif diff_file.renamed_file?
+              %strong<
+                = diff_file.old_path
+              &rarr;
+              %strong<
+                = diff_file.new_path
+            - else
+              %strong<
+                = diff_file.new_path
+          - if diff_file.too_large?
+            因为此文件的差异过大，所以不显示。
+          - else
+            %hr
+            - blob = diff_file.blob
+            - if blob && blob.readable_text?
+              %table.code.white
+                = render partial: "projects/diffs/line", collection: diff_file.highlighted_diff_lines, as: :line, locals: { diff_file: diff_file, plain: true, email: true }
+            - else
+              此文件类型无预览
+          %br

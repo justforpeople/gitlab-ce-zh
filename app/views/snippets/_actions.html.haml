@@ -1,0 +1,33 @@
+- return unless current_user
+
+.hidden-xs
+  - if can?(current_user, :update_personal_snippet, @snippet)
+    = link_to edit_snippet_path(@snippet), class: "btn btn-grouped" do
+      编辑
+  - if can?(current_user, :admin_personal_snippet, @snippet)
+    = link_to snippet_path(@snippet), method: :delete, data: { confirm: "确认删除该代码片段？" }, class: "btn btn-grouped btn-inverted btn-remove", title: '删除代码片段 Snippet' do
+      删除
+  = link_to new_snippet_path, class: "btn btn-grouped btn-inverted btn-create", title: "新建代码片段" do
+    新建代码片段
+  - if @snippet.submittable_as_spam_by?(current_user)
+    = link_to '提交为垃圾', mark_as_spam_snippet_path(@snippet), method: :post, class: 'btn btn-grouped btn-spam', title: 'Submit as spam'
+.visible-xs-block.dropdown
+  %button.btn.btn-default.btn-block.append-bottom-0.prepend-top-5{ data: { toggle: "dropdown" } }
+    选项
+    = icon('caret-down')
+  .dropdown-menu.dropdown-menu-full-width
+    %ul
+      %li
+        = link_to new_snippet_path, title: "新建代码片段" do
+          新建代码片段
+      - if can?(current_user, :admin_personal_snippet, @snippet)
+        %li
+          = link_to snippet_path(@snippet), method: :delete, data: { confirm: "确认删除该代码片段？" }, title: '删除代码片段' do
+            删除
+      - if can?(current_user, :update_personal_snippet, @snippet)
+        %li
+          = link_to edit_snippet_path(@snippet) do
+            编辑
+      - if @snippet.submittable_as_spam_by?(current_user)
+        %li
+          = link_to '提交为垃圾', mark_as_spam_snippet_path(@snippet), method: :post

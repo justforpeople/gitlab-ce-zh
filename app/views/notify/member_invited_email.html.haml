@@ -1,0 +1,12 @@
+%p
+  您被
+  - if member.created_by
+    = link_to member.created_by.name, user_url(member.created_by)
+  邀请加入
+  = link_to member_source.human_name, member_source.web_url
+  #{member_source.model_name.singular} as #{member.human_access}.
+
+%p
+  = link_to '接受邀请', invite_url(@token)
+  或
+  = link_to '拒绝', decline_invite_url(@token)

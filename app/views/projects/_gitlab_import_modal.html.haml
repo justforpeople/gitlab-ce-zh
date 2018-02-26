@@ -1,0 +1,13 @@
+#gitlab_import_modal.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %h3 从 GitLab.com 导入项目
+      .modal-body
+        要开启从 GitLab.com 导入项目，
+        - if current_user.admin?
+          作为管理员你需要配置
+        - else
+          ask your GitLab administrator to configure
+        = link_to 'OAuth 集成', help_page_path("integration/gitlab")

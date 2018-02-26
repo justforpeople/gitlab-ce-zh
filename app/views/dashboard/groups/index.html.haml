@@ -1,0 +1,9 @@
+- @hide_top_links = true
+- page_title "群组"
+- header_title  "群组", dashboard_groups_path
+= render 'dashboard/groups_head'
+
+- if params[:filter].blank? && @groups.empty?
+  = render 'shared/groups/empty_state'
+- else
+  = render 'groups'

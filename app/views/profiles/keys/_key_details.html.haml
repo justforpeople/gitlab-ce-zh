@@ -1,0 +1,27 @@
+- is_admin = defined?(admin) ? true : false
+.row.prepend-top-default
+  .col-md-4
+    .panel.panel-default
+      .panel-heading
+        SSH 密钥
+      %ul.well-list
+        %li
+          %span.light 标题：
+          %strong= @key.title
+        %li
+          %span.light 创建时间：
+          %strong= @key.created_at.to_s(:medium)
+        %li
+          %span.light Last used on:
+          %strong= @key.last_used_at.try(:to_s, :medium) || 'N/A'
+
+  .col-md-8
+    = form_errors(@key, type: 'key') unless @key.valid?
+    %p
+      %span.light 指纹：
+      %code.key-fingerprint= @key.fingerprint
+    %pre.well-pre
+      = @key.key
+  .col-md-12
+    .pull-right
+      = link_to '删除', path_to_key(@key, is_admin), data: {confirm: '确定要继续？'}, method: :delete, class: "btn btn-remove delete-key"

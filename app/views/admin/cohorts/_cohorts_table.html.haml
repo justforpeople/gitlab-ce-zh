@@ -1,0 +1,28 @@
+.bs-callout.clearfix
+  %p
+    正在显示过去 #{@cohorts[:months_included]}
+    个月的用户活跃度。 只有活跃的用户才会计入活跃度中; 非活动
+    用户将单独计算。
+    = link_to icon('question-circle'), help_page_path('user/admin_area/user_cohorts', anchor: 'cohorts'), title: '关于此功能', target: '_blank'
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th 注册月份
+        %th 非活动用户
+        %th 活跃度汇总
+        - @cohorts[:months_included].times do |i|
+          %th 月份 #{i}
+    %tbody
+      - @cohorts[:cohorts].each do |cohort|
+        %tr
+          %td= cohort[:registration_month]
+          %td= cohort[:inactive]
+          %td= cohort[:total]
+          - cohort[:activity_months].each do |activity_month|
+            %td
+              - next if cohort[:total] == '0'
+              = activity_month[:percentage]
+              %br
+              = activity_month[:total]

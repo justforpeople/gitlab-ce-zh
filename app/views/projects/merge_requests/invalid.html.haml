@@ -1,0 +1,24 @@
+- page_title "#{@merge_request.title} (#{@merge_request.to_reference}", "合并请求"
+
+.merge-request
+  = render "projects/merge_requests/mr_title"
+  = render "projects/merge_requests/mr_box"
+
+  .alert.alert-danger
+    %p
+      我们不能展示此合并请求，是因为
+      - if @merge_request.for_fork? && !@merge_request.source_project
+        派生项目被删除
+      - elsif !@merge_request.source_branch_exists?
+        %span.label.label-info= @merge_request.source_project_path
+        中不存在
+        %span.label.label-inverse= @merge_request.source_branch
+      - elsif !@merge_request.target_branch_exists?
+        %span.label.label-info= @merge_request.target_project_path
+        中不存在
+        %span.label.label-inverse= @merge_request.target_branch
+      - else
+        存在内部错误
+
+    %strong
+      请关闭此合并请求或者修改为存在的分支

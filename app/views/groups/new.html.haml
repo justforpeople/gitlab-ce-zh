@@ -1,0 +1,30 @@
+- @breadcrumb_link = dashboard_groups_path
+- breadcrumb_title "群组"
+- @hide_top_links = true
+- page_title    '新群组'
+- header_title  "群组", dashboard_groups_path
+
+%h3.page-title
+  新群组
+%hr
+
+= form_for @group, html: { class: 'group-form form-horizontal gl-show-field-errors' } do |f|
+  = form_errors(@group)
+  = render 'shared/group_form', f: f, autofocus: true
+
+  .form-group.group-description-holder
+    = f.label :avatar, "群组图标", class: 'control-label'
+    .col-sm-10
+      = render 'shared/choose_group_avatar_button', f: f
+
+  = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
+
+  = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
+
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      = render 'shared/group_tips'
+
+  .form-actions
+    = f.submit '创建群组', class: "btn btn-create"
+    = link_to '取消', dashboard_groups_path, class: 'btn btn-cancel'

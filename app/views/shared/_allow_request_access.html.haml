@@ -1,0 +1,6 @@
+.checkbox
+  = form.label :request_access_enabled do
+    = form.check_box :request_access_enabled
+    %strong 允许用户请求访问
+    %br
+    %span.descr 如果可见等级为公开或者私有，允许用户请求访问。

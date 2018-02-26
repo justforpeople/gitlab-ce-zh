@@ -1,0 +1,147 @@
+- affix_offset = local_assigns.fetch(:affix_offset, "50")
+- project = local_assigns[:project]
+
+%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+  .issuable-sidebar.milestone-sidebar
+    .block.milestone-progress.issuable-sidebar-header
+      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+        = sidebar_gutter_toggle_icon
+
+      .sidebar-collapsed-icon
+        %span== #{milestone.percent_complete(current_user)}%
+        = milestone_progress_bar(milestone)
+      .title.hide-collapsed
+        %strong.bold== #{milestone.percent_complete(current_user)}%
+        %span.hide-collapsed
+          完成
+      .value.hide-collapsed
+        = milestone_progress_bar(milestone)
+
+    .block.start_date.hide-collapsed
+      .title
+        开始日期
+        - if @project && can?(current_user, :admin_milestone, @project)
+          = link_to '编辑', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+      .value
+        %span.value-content
+          - if milestone.start_date
+            %span.bold= milestone.start_date.to_s(:medium)
+          - else
+            %span.no-value 没有开始日期
+
+    .block.due_date
+      .sidebar-collapsed-icon
+        = icon('calendar', 'aria-hidden': 'true')
+        %span.collapsed-milestone-date
+          - if milestone.start_date && milestone.due_date
+            - if milestone.start_date.year == milestone.due_date.year
+              .milestone-date= milestone.start_date.strftime('%b %-d')
+            - else
+              .milestone-date= milestone.start_date.strftime('%b %-d %Y')
+            .date-separator -
+            .due_date= milestone.due_date.strftime('%b %-d %Y')
+          - elsif milestone.start_date
+            从
+            .milestone-date= milestone.start_date.strftime('%b %-d %Y')
+          - elsif milestone.due_date
+            直到
+            .milestone-date= milestone.due_date.strftime('%b %-d %Y')
+          - else
+            无
+      .title.hide-collapsed
+        截止日期
+        - if @project && can?(current_user, :admin_milestone, @project)
+          = link_to '编辑', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+      .value.hide-collapsed
+        %span.value-content
+          - if milestone.due_date
+            %span.bold= milestone.due_date.to_s(:medium)
+          - else
+            %span.no-value 没有截止日期
+        - remaining_days = milestone_remaining_days(milestone)
+        - if remaining_days.present?
+          = surround '(', ')' do
+            %span.remaining-days= remaining_days
+
+    - if !project || can?(current_user, :read_issue, project)
+      .block.issues
+        .sidebar-collapsed-icon
+          %strong
+            = custom_icon('issues')
+          %span= milestone.issues_visible_to_user(current_user).count
+        .title.hide-collapsed
+          问题
+          %span.badge= milestone.issues_visible_to_user(current_user).count
+          - if project && can?(current_user, :create_issue, project)
+            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "新建问题" do
+              新建问题
+        .value.hide-collapsed.bold
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :issues) do
+              未关闭:
+              = milestone.issues_visible_to_user(current_user).opened.count
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
+              已关闭:
+              = milestone.issues_visible_to_user(current_user).closed.count
+
+    .block.time_spent
+      .sidebar-collapsed-icon
+        = custom_icon('icon_hourglass')
+        %span.collapsed-milestone-total-time-spent
+        - if milestone.human_total_issue_time_spent
+          = milestone.human_total_issue_time_spent
+        - else
+          = _("None")
+      .title.hide-collapsed
+        = _("Total issue time spent")
+      .value.hide-collapsed
+        - if milestone.human_total_issue_time_spent
+          %span.bold= milestone.human_total_issue_time_spent
+        - else
+          %span.no-value= _("No time spent")
+
+    .block.merge-requests
+      .sidebar-collapsed-icon
+        %strong
+          = custom_icon('mr_bold')
+        %span= milestone.merge_requests.count
+      .title.hide-collapsed
+        合并请求
+        %span.badge= milestone.merge_requests.count
+      .value.hide-collapsed.bold
+        - if !project || can?(current_user, :read_merge_request, project)
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :merge_requests) do
+              未关闭:
+              = milestone.merge_requests.opened.count
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'closed') do
+              已关闭:
+              = milestone.merge_requests.closed.count
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'merged') do
+              已合并:
+              = milestone.merge_requests.merged.count
+        - else
+          %span.milestone-stat
+            未关闭:
+            = milestone.merge_requests.opened.count
+          %span.milestone-stat
+            已关闭:
+            = milestone.merge_requests.closed.count
+          %span.milestone-stat
+            已合并:
+            = milestone.merge_requests.merged.count
+
+    - milestone_ref = milestone.try(:to_reference, full: true)
+    - if milestone_ref.present?
+      .block.reference
+        .sidebar-collapsed-icon.dont-change-state
+          = clipboard_button(text: milestone_ref, title: "复制引用到剪贴板", placement: "left")
+        .cross-project-reference.hide-collapsed
+          %span
+            引用:
+            %cite{ title: milestone_ref }
+              = milestone_ref
+          = clipboard_button(text: milestone_ref, title: "复制引用到剪贴板", placement: "left")

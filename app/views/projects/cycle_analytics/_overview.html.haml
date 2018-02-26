@@ -1,0 +1,14 @@
+.cycle-analytics-overview
+  .container
+    .row
+      .col-md-10.col-md-offset-1
+        .row.overview-details
+          .col-md-6.overview-text
+            %h4 介绍周期分析
+            %p
+              周期分析可以给出这个项目从最初的想法到上生产环境所用时间的整体情况。要设置周期分析，你必须先通过设置你的 CI 来定义生产环境以及部署到生产环境。
+            %p
+              %a.btn{ href: help_page_path('user/project/cycle_analytics'), target: '_blank' } 了解更多
+          .col-md-6.overview-image
+            %span.overview-icon
+              = custom_icon ('icon_cycle_analytics_overview')

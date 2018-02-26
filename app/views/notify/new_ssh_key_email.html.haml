@@ -1,0 +1,10 @@
+%p
+  你好 #{@user.name}!
+%p
+  你的账号增加了一个新的公钥:
+%p
+  标题:
+  %code= @key.title
+%p
+  如果错误增加该 SSH 密钥，可以在这里删除它:
+  = link_to "SSH 密钥", profile_keys_url

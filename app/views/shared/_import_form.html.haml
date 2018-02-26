@@ -1,0 +1,17 @@
+.form-group.import-url-data
+  = f.label :import_url, class: 'label-light' do
+    %span Git 仓库的链接
+
+  = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+
+  .well.prepend-top-20
+    %ul
+      %li
+        版本仓库必须使用 <code>http://</code>、 <code>https://</code> 或 <code>git://</code> 访问。
+      %li
+        链接必须能公开访问或指定用户名和密码，类似： <code>https://username:password@gitlab.company.com/group/project.git</code>。
+      %li
+        导入将于 #{time_interval_in_words(Gitlab.config.gitlab_shell.git_timeout)} 后超时。
+        对于大仓库，请使用 clone/push 组合操作。
+      %li
+        对于合并 SVN 仓库，请查看 #{link_to "这个文档", help_page_path('user/project/import/svn')}.

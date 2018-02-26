@@ -1,0 +1,13 @@
+.prepend-top-default
+.user-callout{ data: { uid: 'convdev_intro_callout_dismissed' } }
+  .bordered-box.landing.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button',
+      'aria-label' => '移除 ConvDev 介绍' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .user-callout-copy
+      %h4
+        您的会话发展指数介绍
+      %p
+        您的会话发展指数从功能特性的角度概述了您的 Gitlab 使用方式。 您将可以看到您与其它组织的对比，发现一些您未曾使用的功能，以及通过博客或者白皮书学习到最好的实践经验。
+    .svg-container.convdev
+      = custom_icon('convdev_overview')

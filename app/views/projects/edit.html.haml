@@ -1,0 +1,201 @@
+- breadcrumb_title "常规设置"
+- page_title "常规"
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
+
+.project-edit-container
+  %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        常规项目设置
+      %button.btn.js-settings-toggle
+        = expanded ? '折叠' : '展开'
+      %p
+        更新您的项目名称、描述、图标和其他常规设置。
+    .settings-content
+      .project-edit-errors
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
+        %fieldset
+          .row
+            .form-group.col-md-9
+              = f.label :name, class: 'label-light', for: 'project_name_edit' do
+                项目名称
+              = f.text_field :name, class: "form-control", id: "project_name_edit"
+
+            .form-group.col-md-3
+              = f.label :id, class: 'label-light' do
+                项目 ID
+              = f.text_field :id, class: 'form-control', readonly: true
+
+          .form-group
+            = f.label :description, class: 'label-light' do
+              项目描述
+              %span.light (可选)
+            = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
+
+          - unless @project.empty_repo?
+            .form-group
+              = f.label :default_branch, "默认分支", class: 'label-light'
+              = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+        .form-group
+          = f.label :tag_list, "标签", class: 'label-light'
+          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
+          %p.help-block 用逗号分隔标签。
+        %fieldset.features
+          %h5.prepend-top-0= _("Project avatar")
+          .form-group
+            - if @project.avatar?
+              .avatar-container.s160.append-bottom-15
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
+            - if @project.avatar_in_git
+              %p.light
+                = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
+            .prepend-top-5.append-bottom-10
+              %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
+              %span.file_name.prepend-left-default.js-avatar-filename= _("No file chosen")
+              = f.file_field :avatar, class: "js-project-avatar-input hidden"
+            .help-block= _("The maximum file size allowed is 200KB.")
+            - if @project.avatar?
+              %hr
+              = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
+        = f.submit 'Save changes', class: "btn btn-success"
+
+  %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        权限
+      %button.btn.js-settings-toggle
+        = expanded ? '收起' : '展开'
+      %p
+        启用或禁用某些项目功能并选择访问级别。
+    .settings-content
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
+        .js-project-permissions-form
+        = f.submit '保存修改', class: "btn btn-save"
+
+  %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
+    .settings-header
+      %h4
+        合并请求设置
+      %button.btn.js-settings-toggle
+        = expanded ? '收起' : '展开'
+      %p
+        自定义您的合并请求限制。
+    .settings-content
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
+        = render 'merge_request_settings', form: f
+        = f.submit '保存修改', class: "btn btn-save"
+
+  = render 'export', project: @project
+
+  %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        高级设置
+      %button.btn.js-settings-toggle
+        = expanded ? '折叠' : '展开'
+      %p
+        执行高级选项，如管理、归档、重命名、转移或删除项目。
+    .settings-content
+      .sub-section
+        %h4 维护
+        %p
+          执行当前仓库的一些维护任务，诸如压缩文件修订版本和删除无用对象等。
+        = link_to '维护', housekeeping_project_path(@project),
+            method: :post, class: "btn btn-default"
+      - if can? current_user, :archive_project, @project
+        .sub-section
+          %h4.warning-title
+            - if @project.archived?
+              激活项目
+            - else
+              归档项目
+          - if @project.archived?
+            %p
+              激活项目将恢复项目版本仓库至可提交状态。
+              %strong 项目一旦激活后，将可以被搜索到并显示在仪表盘中。
+            = link_to '激活项目', unarchive_project_path(@project),
+                data: { confirm: "您确定要激活本项目么？\n激活项目后可以重新提交版本仓库修改。" },
+                method: :post, class: "btn btn-success"
+          - else
+            %p
+              归档项目将标识其版本仓库为只读。. 同时将在仪表盘隐藏并且不能搜索到。
+              %strong 归档后项目将不能被提交！
+            = link_to '归档项目', archive_project_path(@project),
+                data: { confirm: "您确定要归档本项目么？\n归档后的项目将不能被提交。" },
+                method: :post, class: "btn btn-warning"
+      .sub-section.rename-respository
+        %h4.warning-title
+          重命名版本库
+        = render 'projects/errors'
+        = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
+          .form-group.project_name_holder
+            = f.label :name, class: 'label-light' do
+              项目名称
+            .form-group
+              = f.text_field :name, class: "form-control"
+          .form-group
+            = f.label :path, class: 'label-light' do
+              %span 路径
+            .form-group
+              .input-group
+                .input-group-addon
+                  #{URI.join(root_url, @project.namespace.full_path)}/
+                = f.text_field :path, class: 'form-control'
+            %ul
+              %li 请注意：更改项目的命名空间可能有意想不到的副作用。
+              %li 您需要更新本地版本仓库指向新位置。
+              - if @project.deployment_platform.present?
+                %li 您的部署服务将被破坏，您将需要在重命名后手动修复服务。
+          = f.submit '重命名项目', class: "btn btn-warning"
+      - if can?(current_user, :change_namespace, @project)
+        .sub-section
+          %h4.danger-title
+            转移项目
+          = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
+            .form-group
+              = label_tag :new_namespace_id, nil, class: 'label-light' do
+                %span  选择一个新的命名空间
+              .form-group
+                = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'
+              %ul
+                %li 请注意：更改项目的命名空间可能有意想不到的副作用。
+                %li 只能将项目转移到能管理到的命名空间。
+                %li 您需要更新本地版本仓库指向新位置。
+                %li 项目转移到群组时其可见度等级将自动匹配新的命名空间规则。
+            = f.submit '转移项目', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+      - if @project.forked? && can?(current_user, :remove_fork_project, @project)
+        .sub-section
+          %h4.danger-title
+            删除派生关系
+          %p
+            将删除与源项目
+            - if @project.fork_source
+              = link_to(fork_source_name(@project), project_path(@project.fork_source))
+            - else
+              = fork_source_name(@project)
+            的派生关系。
+          = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
+            %p
+              %strong 派生关系一旦删除，将无法恢复；也将无法再提交合并请求到源项目。
+            = button_to '删除派生关系', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+      - if can?(current_user, :remove_project, @project)
+        .sub-section
+          %h4.danger-title
+            删除项目
+          %p
+            删除项目将删除其版本仓库及所有相关资源，包括问题，合并请求等。
+          = form_tag(project_path(@project), method: :delete) do
+            %p
+              %strong 项目删除后将无法恢复！
+            = button_to '删除项目', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+
+.save-project-loader.hide
+  .center
+    %h2
+      %i.fa.fa-spinner.fa-spin
+      正在保存项目。
+    %p 请稍等片刻，本页面会在保存完毕后自动刷新。
+
+= render 'shared/confirm_modal', phrase: @project.path

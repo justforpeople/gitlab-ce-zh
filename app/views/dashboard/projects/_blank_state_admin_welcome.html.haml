@@ -1,0 +1,41 @@
+.blank-state-row
+  = link_to new_project_path, class: "blank-state-link" do
+    .blank-state
+      .blank-state-icon
+        = custom_icon("add_new_project", size: 50)
+      .blank-state-body
+        %h3.blank-state-title
+          创建一个项目
+        %p.blank-state-text
+          项目是存储你的代码的地方，里面还包含问题列表、维基文档以及其它一些 GitLab 的功能。
+
+  - if current_user.can_create_group?
+    = link_to new_group_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_group", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            创建一个群组
+          %p.blank-state-text
+            使用群组管理项目和人员是非常好的方式。
+
+    = link_to new_admin_user_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_user", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            添加人员
+          %p.blank-state-text
+            添加你的团队成员或者其它人到 GitLab。
+
+  = link_to admin_root_path, class: "blank-state-link" do
+    .blank-state
+      .blank-state-icon
+        = custom_icon("configure_server", size: 50)
+      .blank-state-body
+        %h3.blank-state-title
+          配置 GitLab
+        %p.blank-state-text
+          对你的 GitLab 服务器的设置进行调整。

@@ -1,0 +1,530 @@
+- page_title "UI 开发包", "帮助"
+- lorem = "《大教堂与市集》（The Cathedral and the Bazaar）是埃里克·斯蒂芬·雷蒙 Eric Steven Raymond 所撰写的软件工程方法论。以 Linux 的核心开发过程以及作者自己主持开发的开放源代码软件──Fetchmail 为讨论案例。文章在 1997 年 5 月 27 日发表，并在 1999 年出版成书。"
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('ui_development_kit')
+
+.gitlab-ui-dev-kit
+  %h1 GitLab UI 开发包
+  %p.light
+    在浏览器中使用页面检查器查看下面例子中的元素样式和结构。
+  %hr
+  %ul
+    %li
+      = link_to '区块', '#blocks'
+    %li
+      = link_to '列表', '#lists'
+    %li
+      = link_to '表格', '#tables'
+    %li
+      = link_to '导航', '#nav'
+    %li
+      = link_to '按钮', '#buttons'
+    %li
+      = link_to '下拉', '#dropdowns'
+    %li
+      = link_to '面板', '#panels'
+    %li
+      = link_to '警告', '#alerts'
+    %li
+      = link_to '表单', '#forms'
+    %li
+      = link_to '文件', '#file'
+    %li
+      = link_to 'Markdown', '#markdown'
+
+  %h2#blocks 区块
+
+  .lead
+    使用底边框分隔的内容区块
+    %code .content-block
+
+  .example
+    .content-block
+      %h4 包含内容的普通区块
+      = lorem
+
+    .content-block
+      %h4 第二个区块
+      = lorem
+
+  .lead
+    使用边填充的灰底内容区块
+    %code .row-content-block
+
+  .example
+    .row-content-block
+      %h4 包含内容的普通区块
+      = lorem
+
+    .row-content-block.second-block
+      %h4 第二个区块
+      = lorem
+
+
+  .lead
+    带有头像、名称和描述的资料页封面区块
+    %code .cover-block
+  .example
+    .cover-block
+      .avatar-holder
+        = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
+      .cover-title
+        John Smith
+
+      .cover-desc
+        = lorem
+
+      .cover-controls
+        = link_to '#', class: 'btn btn-gray' do
+          = icon('pencil')
+        &nbsp;
+        = link_to '#', class: 'btn btn-gray' do
+          = icon('rss')
+
+  %h2#lists 列表
+
+  .lead
+    简单列表
+    %code .content-list
+
+  .example
+    %ul.content-list
+      %li
+        一个项目
+      %li
+        一个项目
+      %li
+        一个项目
+
+  .lead
+    带有头像、标题和描述的列表
+    %code .content-list
+
+  .example
+    %ul.content-list
+      %li
+        = image_tag 'no_avatar.png', class: 'avatar s40'
+        .title 标题
+        .description 描述
+      %li
+        = image_tag 'no_avatar.png', class: 'avatar s40'
+        .title 标题
+        .description 描述
+      %li
+        = image_tag 'no_avatar.png', class: 'avatar s40'
+        .title 标题
+        .description 描述
+
+  .lead
+    悬停效果列表
+    %code .well-list
+  .example
+    %ul.well-list
+      %li
+        一个项目
+      %li
+        一个项目
+      %li
+        一个项目
+
+  .lead
+    面板内列表
+  .example
+    .panel.panel-default
+      .panel-heading 你的列表
+      %ul.well-list
+        %li
+          一个项目
+        %li
+          一个项目
+        %li
+          一个项目
+
+  %h2#tables 表格
+
+  .example
+    %table.table
+      %thead
+        %tr
+          %th #
+          %th 名字
+          %th 姓氏
+          %th 用户名
+      %tbody
+        %tr
+          %td 1
+          %td Mark
+          %td Otto
+          %td @mdo
+        %tr
+          %td 2
+          %td Jacob
+          %td Thornton
+          %td @fat
+        %tr
+          %td 3
+          %td Larry
+          %td the Bird
+          %td @twitter
+
+  %h2#navs 导航条
+
+  .lead
+    页面顶部导航。包括导航、搜索区域、排序和按钮
+    %code .top-area
+
+  .example
+    .top-area
+      %ul.nav-links
+        %li.active
+          %a 打开的
+        %li
+          %a 关闭的
+      .nav-controls
+        = text_field_tag 'sample', nil, class: 'form-control'
+        .dropdown
+          %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+            %span 按名称排序
+            = icon('chevron-down')
+          %ul.dropdown-menu
+            %li
+              = link_to '按日期排序', '#'
+
+        = link_to '新建问题', '#', class: 'btn btn-new btn-inverted'
+
+  .lead
+    不含按钮和搜索的导航
+    %code .nav-links
+  .example
+    %ul.nav-links
+      %li.active
+        %a 打开的
+      %li
+        %a 关闭的
+
+
+  %h2#buttons 按钮
+
+  .example
+    %button.btn.btn-default{ :type => "button" } Default
+    %button.btn.btn-gray{ :type => "button" } Gray
+    %button.btn.btn-primary{ :type => "button" } Primary
+    %button.btn.btn-success{ :type => "button" } Success
+    %button.btn.btn-info{ :type => "button" } Info
+    %button.btn.btn-warning{ :type => "button" } Warning
+    %button.btn.btn-danger{ :type => "button" } Danger
+    %button.btn.btn-link{ :type => "button" } Link
+
+  %h2#dropdowns 下拉
+
+  .example
+    .clearfix
+      .dropdown.inline.pull-left
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          下拉
+          = icon('chevron-down')
+        %ul.dropdown-menu
+          %li
+            %a{ href: "#" }
+              下拉选项
+      .dropdown.inline.pull-right
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          下拉
+          = icon('chevron-down')
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li
+            %a{ href: "#" }
+              下拉选项
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          下拉
+          = icon('chevron-down')
+        %ul.dropdown-menu.dropdown-menu-selectable
+          %li
+            %a.is-active{ href: "#" }
+              下拉选项
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          下拉
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          .dropdown-title
+            %span 下拉标题
+            %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "关闭" } }
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{ type: "search", placeholder: "过滤结果" }
+            = icon('search')
+          .dropdown-content
+            %ul
+              %li
+                %a.is-active{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li.divider
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+          .dropdown-footer
+            %strong Tip:
+            即使是非此项目的成员，你也能通过搜索框搜索到他的名字。
+      .dropdown.inline
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          正在载入下拉
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable.is-loading
+          .dropdown-title
+            %span 下拉标题
+            %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "关闭" } }
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{ type: "search", placeholder: "过滤结果" }
+            = icon('search')
+          .dropdown-content
+            %ul
+              %li
+                %a.is-active{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li.divider
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+              %li
+                %a{ href: "#" }
+                  下拉选项
+          .dropdown-footer
+            %strong Tip:
+            即使是非此项目的成员，你也能通过搜索框搜索到他的名字。
+          .dropdown-loading
+            = icon('spinner spin')
+
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{ type: 'button', data: {toggle: 'dropdown' } }
+          下拉用户
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user
+          .dropdown-title
+            %span 下拉标题
+            %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "关闭" } }
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{ type: "search", placeholder: "过滤结果" }
+            = icon('search')
+          .dropdown-content
+            %ul
+              %li
+                %a.dropdown-menu-user-link.is-active{ href: "#" }
+                  = link_to_member_avatar(@user, size: 30)
+                  %strong.dropdown-menu-user-full-name
+                    = @user.name
+                  .dropdown-menu-user-username
+                    = @user.to_reference
+
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          下拉页 2
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user.dropdown-menu-paging.is-page-two
+          .dropdown-page-one
+            .dropdown-title
+              %button.dropdown-title-button.dropdown-menu-back{ aria: { label: "返回" } }
+                = icon('arrow-left')
+              %span 下拉标题
+              %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "关闭" } }
+                = icon('times')
+            .dropdown-input
+              %input.dropdown-input-field{ type: "search", placeholder: "过滤结果" }
+              = icon('search')
+            .dropdown-content
+              %ul
+                %li
+                  %a.dropdown-menu-user-link.is-active{ href: "#" }
+                    = link_to_member_avatar(@user, size: 30)
+                    %strong.dropdown-menu-user-full-name
+                      = @user.name
+                    .dropdown-menu-user-username
+                      = @user.to_reference
+          .dropdown-page-two
+            .dropdown-title
+              %button.dropdown-title-button.dropdown-menu-back{ aria: { label: "返回" } }
+                = icon('arrow-left')
+              %span 创建标记
+              %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "关闭" } }
+                = icon('times')
+            .dropdown-input
+              %input.dropdown-input-field{ type: "search", placeholder: "新标记名称" }
+            .dropdown-content
+              %button.btn.btn-primary
+                创建
+
+  .example
+    %div
+      .dropdown.inline
+        %button#js-project-dropdown.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          项目
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          .dropdown-title
+            %span 转到项目
+            %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "关闭" } }
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{ type: "search", placeholder: "过滤结果" }
+            = icon('search')
+          .dropdown-content
+          .dropdown-loading
+            = icon('spinner spin')
+
+  .example
+    %div
+      = dropdown_tag("项目", options: { title: "转到项目", filter: true, placeholder: "过滤项目" })
+
+  %h2#panels 面板
+
+  .row
+    .col-md-6
+      .panel.panel-success
+        .panel-heading 成功
+        .panel-body
+          = lorem
+      .panel.panel-primary
+        .panel-heading 主要
+        .panel-body
+          = lorem
+      .panel.panel-info
+        .panel-heading 信息
+        .panel-body
+          = lorem
+    .col-md-6
+      .panel.panel-warning
+        .panel-heading 警告
+        .panel-body
+          = lorem
+      .panel.panel-danger
+        .panel-heading 危险
+        .panel-body
+          = lorem
+
+  %h2#alerts 警告
+
+  .row
+    .col-md-6
+      .alert.alert-success
+        = lorem
+      .alert.alert-primary
+        = lorem
+      .alert.alert-info
+        = lorem
+    .col-md-6
+      .alert.alert-warning
+        = lorem
+      .alert.alert-danger
+        = lorem
+
+  %h2#forms 表单
+
+  .lead
+    输入框前带标签的横向表单
+    %code form.horizontal-form
+
+  .example
+    %form.form-horizontal
+      .form-group
+        %label.col-sm-2.control-label{ :for => "inputEmail3" } 邮箱
+        .col-sm-10
+          %input#inputEmail3.form-control{ :placeholder => "邮箱", :type => "email" }/
+      .form-group
+        %label.col-sm-2.control-label{ :for => "inputPassword3" } 密码
+        .col-sm-10
+          %input#inputPassword3.form-control{ :placeholder => "密码", :type => "password" }/
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            %label
+              %input{ :type => "checkbox" }/
+              记住我
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          %button.btn.btn-default{ :type => "submit" } 登录
+
+  .lead
+    输入框上方带标签的表单
+    %code form
+
+  .example
+    %form
+      .form-group
+        %label{ :for => "exampleInputEmail1" } 邮箱地址
+        %input#exampleInputEmail1.form-control{ :placeholder => "输入邮箱", :type => "email" }/
+      .form-group
+        %label{ :for => "exampleInputPassword1" } 密码
+        %input#exampleInputPassword1.form-control{ :placeholder => "密码", :type => "password" }/
+      .checkbox
+        %label
+          %input{ :type => "checkbox" }/
+          记住我
+      %button.btn.btn-default{ :type => "submit" } 登录
+
+  %h2#file 文件
+  %h4
+    %code .file-holder
+
+  - blob = Snippet.new(content: "Wow\nSuch\nFile").blob
+  .example
+    .file-holder
+      .js-file-title.file-title
+        Awesome file
+        .file-actions
+          .btn-group
+            %a.btn 编辑
+            %a.btn.btn-danger 删除
+      .file-contenta.code
+        = render 'shared/file_highlight', blob: blob
+
+  %h2#markdown Markdown
+  %h4
+    %code .md or .wiki 和其它
+
+  Markdown 会在下列 UI 元素中使用，并具有一些不同的 css 展示效果：
+
+  %ul
+    %li 评论
+    %li 问题、合并请求描述
+    %li 维基页面
+    %li 帮助页面
+
+  你可以在 #{link_to 'Markdown 帮助页', help_page_path("user/markdown")} 中查看 markdown 展示详情。

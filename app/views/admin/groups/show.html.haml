@@ -1,0 +1,125 @@
+- add_to_breadcrumbs "Groups", admin_groups_path
+- breadcrumb_title @group.name
+- page_title @group.name, "群组"
+%h3.page-title
+  群组: #{@group.full_name}
+
+  = link_to admin_group_edit_path(@group), class: "btn pull-right" do
+    %i.fa.fa-pencil-square-o
+    编辑
+%hr
+.row
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        群组信息:
+      %ul.well-list
+        %li
+          .avatar-container.s60
+            = group_icon(@group, class: "avatar s60")
+        %li
+          %span.light 名称:
+          %strong= @group.name
+        %li
+          %span.light 路径:
+          %strong
+            = @group.path
+
+        %li
+          %span.light 描述:
+          %strong
+            = @group.description
+
+        %li
+          %span.light 可见等级：
+          %strong
+            = visibility_level_label(@group.visibility_level)
+
+        %li
+          %span.light 创建时间：
+          %strong
+            = @group.created_at.to_s(:medium)
+
+        %li
+          %span.light 存储:
+          %strong= storage_counter(@group.storage_size)
+          (
+          = storage_counter(@group.repository_size)
+          版本库,
+          = storage_counter(@group.build_artifacts_size)
+          构建工件,
+          = storage_counter(@group.lfs_objects_size)
+          LFS
+          )
+
+        %li
+          %span.light 群组的 Git LFS 状态:
+          %strong
+            = group_lfs_status(@group)
+            = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          项目
+          %span.badge
+            #{@group.projects.count}
+      %ul.well-list
+        - @projects.each do |project|
+          %li
+            %strong
+              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+              %span.badge
+                = storage_counter(project.statistics.storage_size)
+            %span.pull-right.light
+              %span.monospace= project.full_path + '.git'
+      .panel-footer
+        = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
+
+    - if @group.shared_projects.any?
+      .panel.panel-default
+        .panel-heading
+          #{@group.name} 共享项目
+          %span.badge
+            #{@group.shared_projects.count}
+        %ul.well-list
+          - @group.shared_projects.sort_by(&:name).each do |project|
+            %li
+              %strong
+                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+                %span.badge
+                  = storage_counter(project.statistics.storage_size)
+              %span.pull-right.light
+                %span.monospace= project.full_path + '.git'
+
+  .col-md-6
+    - if can?(current_user, :admin_group_member, @group)
+      .panel.panel-default
+        .panel-heading
+          增加用户到群组：
+        .panel-body.form-holder
+          %p.light
+            关于项目的权限点击
+            %strong= link_to "这里", help_page_path("user/permissions"), class: "vlink"
+            了解更多信息
+
+          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
+            %div
+              = users_select_tag(:user_ids, multiple: true, email_user: true, scope: :all)
+            .prepend-top-10
+              = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
+            %hr
+            = button_tag '增加用户到群组', class: "btn btn-create"
+      = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
+
+    .panel.panel-default
+      .panel-heading
+        %strong= @group.name
+        群组成员
+        %span.badge= @group.members.size
+        .pull-right
+          = link_to icon('pencil-square-o', text: '管理权限'), polymorphic_url([@group, :members]), class: "btn btn-xs"
+      %ul.well-list.group-users-list.content-list.members-list
+        = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
+      .panel-footer
+        = paginate @members, param_name: 'members_page', theme: 'gitlab'

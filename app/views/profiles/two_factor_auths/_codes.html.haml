@@ -1,0 +1,13 @@
+%p.slead
+  如果丢失了手机，可以使用下面的恢复代码重新访问你的账户。
+  请将其保存到安全的地方，否则你
+  %b 将
+  会无法访问你的账户。
+
+.codes.well
+  %ul
+    - @codes.each do |code|
+      %li
+        %span.monospace= code
+
+= link_to '继续', profile_account_path, class: 'btn btn-success'

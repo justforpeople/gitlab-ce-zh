@@ -1,0 +1,12 @@
+.file-actions
+  .btn-group{ "v-if" => "file.type === 'text'" }
+    %button.btn{ ":class" => "{ 'active': file.resolveMode == 'interactive' }",
+      '@click' => "onClickResolveModeButton(file, 'interactive')",
+      type: 'button' }
+      交互模式
+    %button.btn{ ':class' => "{ 'active': file.resolveMode == 'edit' }",
+      '@click' => "onClickResolveModeButton(file, 'edit')",
+      type: 'button' }
+      内嵌编辑
+  %a.btn.view-file{ ":href" => "file.blobPath" }
+    查看文件 @{{conflictsData.shortCommitSha}}

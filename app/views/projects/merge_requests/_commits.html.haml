@@ -1,0 +1,8 @@
+- if @commits.empty?
+  .commits-empty
+    %h4
+      没有提交。
+    = custom_icon ('illustration_no_commits')
+- else
+  %ol#commits-list.list-unstyled
+    = render "projects/commits/commits", merge_request: @merge_request

@@ -1,0 +1,24 @@
+- page_title 'GitLab Pages'
+
+%h3.page_title
+  GitLab Pages
+
+  - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
+    = link_to new_project_pages_domain_path(@project), class: 'btn btn-new pull-right', title: '新建域名' do
+      %i.fa.fa-plus
+      新建域名
+
+%p.light
+  通过 GitLab Pages 您可以在 GitLab 上托管静态网页。
+  结合 GitLab CI 的强大功能和 GitLab Runner 的帮助
+  您可以为单个项目、用户或群组部署静态网页。
+
+%hr.clearfix
+
+= render 'access'
+= render 'use'
+- if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+  = render 'list'
+- else
+  = render 'no_domains'
+= render 'destroy'

@@ -1,0 +1,42 @@
+- page_title "GitHub Import"
+- header_title "Projects", root_path
+
+%h3.page-title
+  = icon 'github', text: '从 GitHub 导入项目'
+
+- if github_import_configured?
+  %p
+    要导入 GitHub 项目，您首先需要授权 GitLab 访问
+    您在 GitHub 下列版本库：
+
+  = link_to '列出您的 GitHub 版本库', status_import_github_path, class: 'btn btn-success'
+
+  %hr
+
+%p
+  - if github_import_configured?
+    另外,
+  - else
+    要从 GitHub 导入项目,
+  您可以使用一个
+  = succeed '.' do
+    = link_to '个人访问令牌', 'https://github.com/settings/tokens'
+  您在创建个人访问令牌时,
+  需要选择 <code>repo</code> 范围, 这样我们才可以
+  列出您的可被导出的公开及私有版本库。
+
+= form_tag personal_access_token_import_github_path, method: :post, class: 'form-inline' do
+  .form-group
+    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "个人访问令牌", size: 40
+    = submit_tag '列出您的 GitHub 版本库', class: 'btn btn-success'
+
+- unless github_import_configured?
+  %hr
+  %p
+    Note:
+    - if current_user.admin?
+      作为管理员，您可能需要配置
+    - else
+      请考虑要求您的 GitLab 管理员配置
+    = link_to 'GitHub 集成', help_page_path("integration/github")
+    这将可以通过 GitHub 登录，并允许导入项目，而不需要生成个人令牌。

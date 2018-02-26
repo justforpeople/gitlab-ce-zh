@@ -1,0 +1,11 @@
+- is_admin = local_assigns.fetch(:admin, false)
+
+- if @keys.any?
+  %ul.well-list
+    = render partial: 'profiles/keys/key', collection: @keys, locals: { is_admin: is_admin }
+- else
+  %p.settings-message.text-center
+    - if is_admin
+      该账号没有 ssh 密钥。
+    - else
+      您的账号没有 SSH 密钥。

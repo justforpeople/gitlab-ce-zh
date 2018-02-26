@@ -1,0 +1,24 @@
+- page_title "派生项目"
+- if @forked_project && !@forked_project.saved?
+  .alert.alert-danger.alert-block
+    %h4
+      = sprite_icon('fork', size: 16)
+      派生错误！
+    %p
+      试图派生
+      = link_to_project @project
+      出现错误，原因如下：
+
+
+    - if @forked_project && @forked_project.errors.any?
+      %p
+        &ndash;
+        - error = @forked_project.errors.full_messages.first
+        - if error.include?("already been taken")
+          Name has already been taken
+        - else
+          = error
+
+    %p
+      = link_to new_project_fork_path(@project), title: "派生", class: "btn" do
+        重试派生

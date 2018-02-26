@@ -1,0 +1,31 @@
+- issue = issuable
+- assignees = issue.assignees
+.block.assignee
+  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee_list) }
+    - if assignees.any?
+      - assignees.each do |assignee|
+        = link_to_member(@project, assignee, size: 24)
+    - else
+      = icon('user', 'aria-hidden': 'true')
+  .title.hide-collapsed
+    指派
+    = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
+    - if can_edit_issuable
+      = link_to '编辑', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+  .value.hide-collapsed
+    - if assignees.any?
+      - assignees.each do |assignee|
+        = link_to_member(@project, assignee, size: 32, extra_class: 'bold') do
+          %span.username
+            = assignee.to_reference
+    - else
+      %span.assign-yourself.no-value
+        未指派
+        - if can_edit_issuable
+          \-
+          %a.js-assign-yourself{ href: '#' }
+            指派给您自己
+
+  .selectbox.hide-collapsed
+    = f.hidden_field 'assignee_ids', value: issuable.assignee_ids, id: 'issue_assignee_ids'
+    = dropdown_tag('选择指派', options: { toggle_class: 'js-user-search js-author-search', title: '指派给', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: '搜索用户', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })

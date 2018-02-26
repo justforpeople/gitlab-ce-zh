@@ -1,0 +1,13 @@
+- form = local_assigns.fetch(:form)
+- project = local_assigns.fetch(:project)
+
+.radio
+  = label_tag :project_merge_method_ff do
+    = form.radio_button :merge_method, :ff, class: "js-merge-method-radio"
+    %strong 快进合并
+    %br
+    %span.descr
+      不会创建合并提交，所有的合并都是快进方式，也就是说只有可以快进和并的分支才允许合并。
+    %br
+    %span.descr
+      当不可能快进合并时，用户可以选择 rebase。

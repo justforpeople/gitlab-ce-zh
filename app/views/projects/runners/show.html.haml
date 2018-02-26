@@ -1,0 +1,61 @@
+- page_title "#{@runner.description} ##{@runner.id}", "Runners"
+
+%h3.page-title
+  Runner ##{@runner.id}
+  .pull-right
+    - if @runner.shared?
+      %span.runner-state.runner-state-shared
+        共享的
+    - else
+      %span.runner-state.runner-state-specific
+        指定的
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th 属性名称
+        %th 值
+    %tr
+      %td Active
+      %td= @runner.active? ? '是' : '否'
+    %tr
+      %td 被保护
+      %td= @runner.ref_protected? ? 'Yes' : 'No'
+    %tr
+      %td 可以运行未标记的作业
+      %td= @runner.run_untagged? ? 'Yes' : 'No'
+    %tr
+      %td 锁定到该项目
+      %td= @runner.locked? ? '是' : '否'
+    %tr
+      %td 标签
+      %td
+        - @runner.tag_list.sort.each do |tag|
+          %span.label.label-primary
+            = tag
+    %tr
+      %td 名称
+      %td= @runner.name
+    %tr
+      %td 版本
+      %td= @runner.version
+    %tr
+      %td 修订版本
+      %td= @runner.revision
+    %tr
+      %td 平台
+      %td= @runner.platform
+    %tr
+      %td 架构
+      %td= @runner.architecture
+    %tr
+      %td 描述
+      %td= @runner.description
+    %tr
+      %td 最后联系时间
+      %td
+        - if @runner.contacted_at
+          #{time_ago_in_words(@runner.contacted_at)} 之前
+        - else
+          从未

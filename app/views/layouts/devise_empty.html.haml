@@ -1,0 +1,17 @@
+!!! 5
+%html{ lang: "en" }
+  = render "layouts/head"
+  %body.ui_indigo.login-page.application.navless
+    = render "layouts/header/empty"
+    = render "layouts/broadcast"
+    .container.navless-container
+      .content
+        = render "layouts/flash"
+        = yield
+
+    %hr
+    .container
+      .footer-links
+        = link_to "浏览", explore_root_path
+        = link_to "帮助", help_path
+        = link_to "关于 GitLab", "https://about.gitlab.com/"

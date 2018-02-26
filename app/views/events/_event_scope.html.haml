@@ -1,0 +1,7 @@
+%span.event-scope
+  - if event.project
+    = link_to_project event.project
+  - else
+    = event.project_name
+  = event_preposition(event)
+

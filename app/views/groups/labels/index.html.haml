@@ -1,0 +1,19 @@
+- page_title '标记'
+
+.top-area.adjust
+  .nav-text
+    标记可应用于问题和合并请求。群组标记适用于群组内的所有项目。
+
+  .nav-controls
+    - if can?(current_user, :admin_label, @group)
+      = link_to "新建标记", new_group_label_path(@group), class: "btn btn-new"
+
+.labels
+  .other-labels
+    - if @labels.present?
+      %ul.content-list.manage-labels-list.js-other-labels
+        = render partial: 'shared/label', subject: @group, collection: @labels, as: :label
+        = paginate @labels, theme: 'gitlab'
+    - else
+      .nothing-here-block
+        还没有创建标记。

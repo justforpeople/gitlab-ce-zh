@@ -1,0 +1,31 @@
+.panel.panel-default
+  .panel-heading
+    个人资料
+  %ul.well-list
+    %li
+      %span.light 注册时间：
+      %strong= user.created_at.to_s(:medium)
+    - unless user.public_email.blank?
+      %li
+        %span.light 邮箱：
+        %strong= link_to user.public_email, "mailto:#{user.public_email}"
+    - unless user.skype.blank?
+      %li
+        %span.light Skype:
+        %strong= link_to user.skype, "skype:#{user.skype}"
+    - unless user.linkedin.blank?
+      %li
+        %span.light 领英：
+        %strong= link_to user.linkedin, "https://www.linkedin.com/in/#{user.linkedin}"
+    - unless user.twitter.blank?
+      %li
+        %span.light 推特：
+        %strong= link_to user.twitter, "https://twitter.com/#{user.twitter}"
+    - unless user.website_url.blank?
+      %li
+        %span.light 网站：
+        %strong= link_to user.short_website_url, user.full_website_url
+    - unless user.location.blank?
+      %li
+        %span.light 位置：
+        %strong= user.location

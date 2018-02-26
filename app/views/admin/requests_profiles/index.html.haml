@@ -1,0 +1,25 @@
+- @no_container = true
+- page_title '请求配置'
+
+%div{ class: container_class }
+  %h3.page-title
+    = page_title
+
+  .bs-callout.clearfix
+    通过传输HTTP头字段
+    %code X-Profile-Token: #{@profile_token}
+    来配置请求
+
+  - if @profiles.present?
+    .prepend-top-default
+      - @profiles.each do |path, profiles|
+        .panel.panel-default.panel-small
+          .panel-heading
+            %code= path
+          %ul.content-list
+            - profiles.each do |profile|
+              %li
+                = link_to profile.time.to_s(:long), admin_requests_profile_path(profile)
+  - else
+    %p
+      没找到请求配置。

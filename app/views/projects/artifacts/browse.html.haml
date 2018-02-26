@@ -1,0 +1,34 @@
+- breadcrumb_title _('Artifacts')
+- page_title @path.presence, '工件', "#{@build.name} (##{@build.id})", '作业'
+
+= render "projects/jobs/header", show_controls: false
+
+- add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
+- add_to_breadcrumbs("##{@build.id}", project_jobs_path(@project))
+
+.tree-holder
+  .nav-block
+    %ul.breadcrumb.repo-breadcrumb
+      %li
+        = link_to '工件', browse_project_job_artifacts_path(@project, @build)
+      - path_breadcrumbs do |title, path|
+        %li
+          = link_to truncate(title, length: 40), browse_project_job_artifacts_path(@project, @build, path)
+
+    .tree-controls
+      = link_to download_project_job_artifacts_path(@project, @build),
+        rel: 'nofollow', download: '', class: 'btn btn-default download' do
+        = sprite_icon('download')
+        下载工件
+
+  .tree-content-holder
+    %table.table.tree-table
+      %thead
+        %tr
+          %th 名称
+          %th 大小
+      = render partial: 'tree_directory', collection: @entry.directories(parent: true), as: :directory
+      = render partial: 'tree_file', collection: @entry.files, as: :file
+
+- if @entry.empty?
+  .center 空

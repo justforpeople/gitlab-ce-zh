@@ -1,0 +1,21 @@
+- add_to_breadcrumbs "System Hooks", admin_hooks_path
+- page_title '编辑系统钩子'
+%h3.page-title
+  编辑系统钩子
+
+%p.light
+  #{link_to '系统钩子 ', help_page_path('system_hooks/system_hooks'), class: 'vlink'} 可用于
+  绑定 GitLab 创建用户或项目的事件。
+
+%hr
+
+= form_for @hook, as: :hook, url: admin_hook_path, html: { class: 'form-horizontal' } do |f|
+  = render partial: 'form', locals: { form: f, hook: @hook }
+  .form-actions
+    = f.submit '保存修改', class: 'btn btn-create'
+    = render 'shared/web_hooks/test_button', triggers: SystemHook.triggers, hook: @hook
+    = link_to '删除', admin_hook_path(@hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: '确定删除钩子？' }
+
+%hr
+
+= render partial: 'admin/hook_logs/index', locals: { hook: @hook, hook_logs: @hook_logs }

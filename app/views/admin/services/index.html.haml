@@ -1,0 +1,24 @@
+- page_title "服务模板"
+%h3.page-title 服务模板
+%p.light 服务模板可以为项目服务设置默认值
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th
+        %th 服务
+        %th 描述
+        %th 最后编辑
+    - @services.sort_by(&:title).each do |service|
+      %tr
+        %td
+          = boolean_to_icon service.activated?
+        %td
+          = link_to edit_admin_application_settings_service_path(service.id) do
+            %strong= service.title
+        %td
+          = service.description
+        %td.light
+          = time_ago_in_words service.updated_at
+          过去

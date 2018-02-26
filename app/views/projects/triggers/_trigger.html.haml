@@ -1,0 +1,42 @@
+%tr
+  %td
+    - if can?(current_user, :admin_trigger, trigger)
+      %span= trigger.token
+      = clipboard_button(text: trigger.token, title: "复制触发器令牌到剪贴板")
+    - else
+      %span= trigger.short_token
+
+    .label-container
+      - if trigger.legacy?
+        %span.label.label-primary.has-tooltip{ title: "Trigger makes use of deprecated functionality" } legacy
+      - if !trigger.can_access_project?
+        %span.label.label-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
+
+  %td
+    - if trigger.description? && trigger.description.length > 15
+      %span.has-tooltip{ title: trigger.description }= truncate(trigger.description, length: 15)
+    - else
+      = trigger.description
+
+  %td
+    - if trigger.owner
+      .trigger-owner.sr-only= trigger.owner.name
+      = user_avatar(user: trigger.owner, size: 20)
+
+  %td
+    - if trigger.last_used
+      #{time_ago_in_words(trigger.last_used)} 之前
+    - else
+      从未
+
+  %td.text-right.trigger-actions
+    - take_ownership_confirmation = "通过取得所有权会将此触发器绑定到您的用户帐户。如此一来此触发器将会像您一样访问到您的项目。是否确定？"
+    - revoke_trigger_confirmation = "撤销触发器将会中断该触发器的所有过程。是否确定？"
+    - if trigger.owner != current_user && can?(current_user, :manage_trigger, trigger)
+      = link_to '取得所有权', take_ownership_project_trigger_path(@project, trigger), data: { confirm: take_ownership_confirmation }, method: :post, class: "btn btn-default btn-sm btn-trigger-take-ownership"
+    - if can?(current_user, :admin_trigger, trigger)
+      = link_to edit_project_trigger_path(@project, trigger), method: :get, title: "编辑", class: "btn btn-default btn-sm" do
+        %i.fa.fa-pencil
+    - if can?(current_user, :manage_trigger, trigger)
+      = link_to project_trigger_path(@project, trigger), data: { confirm: revoke_trigger_confirmation }, method: :delete, title: "Revoke", class: "btn btn-default btn-warning btn-sm btn-trigger-revoke" do
+        %i.fa.fa-trash

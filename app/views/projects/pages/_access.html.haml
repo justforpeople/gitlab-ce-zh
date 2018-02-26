@@ -1,0 +1,13 @@
+- if @project.pages_deployed?
+  .panel.panel-default
+    .panel-heading
+      访问网页
+    .panel-body
+      %p
+        %strong
+          恭喜！ 您的网页通过以下网址提供服务:
+
+      %p= link_to @project.pages_url, @project.pages_url
+
+      - @project.pages_domains.each do |domain|
+        %p= link_to domain.url, domain.url

@@ -1,0 +1,36 @@
+- issuable = local_assigns.fetch(:issuable)
+- has_wip_commits = local_assigns.fetch(:has_wip_commits)
+- form = local_assigns.fetch(:form)
+- no_issuable_templates = issuable_templates(issuable).empty?
+- div_class = no_issuable_templates ? 'col-sm-10' : 'col-sm-7 col-lg-8'
+
+%div{ class: div_class }
+  = form.text_field :title, required: true, maxlength: 255, autofocus: true,
+      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title'
+
+  - if issuable.respond_to?(:work_in_progress?)
+    %p.help-block
+      .js-wip-explanation
+        %a.js-toggle-wip{ href: '', tabindex: -1 }
+          从标题中删除
+          %code WIP:
+          前缀
+        表示允许此标识为
+        %strong 正在处理中
+        的合并请求已准备好可以被接受。
+      .js-no-wip-explanation
+        - if has_wip_commits
+          看起来您在这个分支中有一些 WIP 提交。
+          %br
+        %a.js-toggle-wip{ href: '', tabindex: -1 }
+          标题以
+          %code WIP:
+        开头将合并请求标识为
+        %strong 正在处理中
+        表示其还未准备好可以接受合并。
+
+  - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
+    %p.help-block
+      增加
+      = link_to '描述模板', help_page_path('user/project/description_templates'), tabindex: -1
+      以帮助您的贡献者们更有效地沟通！

@@ -1,0 +1,54 @@
+= webpack_bundle_tag 'docs'
+
+%div
+- if Gitlab::CurrentSettings.help_page_text.present?
+  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
+  %hr
+
+%h1
+  GitLab
+  社区版
+  - if user_signed_in?
+    %span= Gitlab::VERSION
+    %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
+    = version_status_badge
+  %hr
+
+- unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
+  %p.slead
+    GitLab 是用于代码协作的开源软件。
+    %br
+    细粒度访问控制管理 git 仓库以保证代码安全。
+    %br
+    使用合并请求进行代码审查并加强团体合作。
+    %br
+    每个项目均有自己的问题跟踪和维基页面。
+    %br
+    超过 100,000 的组织在使用 GitLab，GitLab 是最受欢迎的 Git 代码托管解决方案。
+    %br
+    了解 Gitlab 更多内容请访问 #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}。
+    %br
+    需要改进中文翻译，请#{link_to '派生https://gitlab.com/xhang/gitlab 项目', 'https://gitlab.com/xhang/gitlab/forks/new'}，
+    修改文件后提交#{link_to '合并请求', 'https://gitlab.com/xhang/gitlab/merge_requests/new'}。
+    %p= link_to 'Check the current instance configuration ', help_instance_configuration_url
+  %hr
+
+.row.prepend-top-default
+  .col-md-8
+    .documentation-index.wiki
+      = markdown(@help_index)
+  .col-md-4
+    .panel.panel-default
+      .panel-heading
+        快速帮助
+      %ul.well-list
+        %li= link_to '查看我们的网站获取帮助', support_url
+        %li
+          %button.btn-blank.btn-link.js-trigger-search-bar{ type: 'button' }
+            使用页面顶部的搜索功能
+        %li
+          %button.btn-blank.btn-link.js-trigger-shortcut{ type: 'button' }
+            键盘快捷键
+        - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
+          %li= link_to '获取技术支持订阅', 'https://about.gitlab.com/pricing/'
+          %li= link_to '比较 GitLab 版本', 'https://about.gitlab.com/features/#compare'
